@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:furniture_shop/config/constants.dart';
+import 'package:furniture_shop/main_screen.dart';
+import 'package:furniture_shop/providers/app_state_provider.dart';
+import 'package:furniture_shop/providers/auth_provider.dart';
+import 'package:furniture_shop/screens/auth/sign_in_screen.dart';
+import 'package:furniture_shop/screens/onboarding/onboarding_screen.dart';
+import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -42,6 +48,38 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _controller.forward();
+
+    Future.delayed(const Duration(milliseconds: 2500), () {
+      if (mounted) {
+        final appStateProvider = Provider.of<AppStateProvider>(
+          context,
+          listen: false,
+        );
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+        Widget nextScreen;
+
+        if (!appStateProvider.hasSeenOnboarding) {
+          nextScreen = const OnboardingScreen();
+        } else if (!authProvider.isLoggedIn) {
+          nextScreen = const SignInScreen();
+        } else {
+          nextScreen = const MainScreen();
+        }
+
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => nextScreen,
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+            transitionDuration: Duration(milliseconds: 800),
+          ),
+        );
+      }
+    });
   }
 
   @override
