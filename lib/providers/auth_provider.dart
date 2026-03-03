@@ -28,4 +28,40 @@ class AuthProvider with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<bool> signIn(String email, String password) async {
+    try {
+      _isLoading = true;
+      _errorMessage = null;
+      notifyListeners();
+
+      // Simulasi network delay
+      await Future.delayed(const Duration(seconds: 1));
+
+      //TODO: Implement actual authentication logic
+      //For demo purposes, we'all accept any email with a password length than 6 characters
+      if (password.length < 6) {
+        throw Exception('Password must be at least 6 characters long');
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_isLoggedInKey, true);
+      await prefs.setString(_userEmailKey, email);
+      await prefs.setString(_userNameKey, email.split('@')[0]);
+
+      _isLoggedIn = true;
+      _userEmail = email;
+      _userName = email.split('@')[0];
+      _isLoading = false;
+      notifyListeners();
+
+      return true;
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = e.toString();
+      notifyListeners();
+
+      return false;
+    }
+  }
 }

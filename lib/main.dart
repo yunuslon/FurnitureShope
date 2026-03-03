@@ -4,7 +4,6 @@ import 'package:furniture_shop/app_starter.dart';
 import 'package:furniture_shop/config/theme.dart';
 import 'package:furniture_shop/providers/app_state_provider.dart';
 import 'package:furniture_shop/providers/auth_provider.dart';
-import 'package:furniture_shop/screens/onboarding/onboarding_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
